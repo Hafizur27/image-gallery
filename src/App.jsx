@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { useRef, useState } from "react";
 
 const images = [
@@ -61,18 +62,27 @@ const images = [
 function App() {
   // selected image
   const [selectedImg, setSelectedImg] = useState(images);
+  const [imgArray, setImgArray] = useState([]);
   const handleSelectedImg = (id) => {
     const updateSelectedImg = selectedImg.map((img) => {
       return img.id === id ? { ...img, select: !img.select } : img;
     });
+
     setSelectedImg(updateSelectedImg);
+    const remainingImage = updateSelectedImg.filter(
+      (image) => image.select === true
+    );
+    setImgArray(remainingImage);
   };
 
   // delete btn
   const handleDeleteBtn = () => {
-    const remainingImage = selectedImg.filter((image)=> image.select === false);
+    const remainingImage = selectedImg.filter(
+      (image) => image.select === false
+    );
     setSelectedImg(remainingImage);
-  }
+    setImgArray([]);
+  };
 
   const fileInputRef = useRef();
 
@@ -93,19 +103,33 @@ function App() {
         <div className="flex justify-between px-8 py-8">
           <div className="flex items-center gap-2">
             <h3 className="text-3xl font-semibold ">Gallery</h3>
-            <div className="flex items-center gap-2">
-              <input
-                className="rounded-full h-6 w-6"
-                type="checkbox"
-                name=""
-                id=""
-              />
-              <h3>Files Selected</h3>
-            </div>
+            {/* selected file */}
+            {imgArray.length > 0 && (
+              <div className="flex items-center gap-2">
+                <input
+                  defaultChecked
+                  className="rounded-full h-6 w-6"
+                  type="checkbox"
+                  name=""
+                  id=""
+                />
+                {imgArray.length === 1 ? (
+                  <h3>{imgArray.length} File Selected</h3>
+                ) : (
+                  <h3>{imgArray.length} Files Selected</h3>
+                )}
+              </div>
+            )}
           </div>
-          <button onClick={()=> handleDeleteBtn()} className="text-2xl text-red-500 font-semibold">
-            Delete Files
-          </button>
+          {/* delete file */}
+          {imgArray.length > 0 && (
+            <button
+              onClick={() => handleDeleteBtn()}
+              className="text-2xl text-red-500 font-semibold"
+            >
+              Delete Files
+            </button>
+          )}
         </div>
         <hr />
         <div className="grid grid-cols-5 p-8 gap-4">
