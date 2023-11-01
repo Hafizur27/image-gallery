@@ -68,6 +68,12 @@ function App() {
     setSelectedImg(updateSelectedImg);
   };
 
+  // delete btn
+  const handleDeleteBtn = () => {
+    const remainingImage = selectedImg.filter((image)=> image.select === false);
+    setSelectedImg(remainingImage);
+  }
+
   const fileInputRef = useRef();
 
   const handleImageUploadClick = () => {
@@ -97,7 +103,7 @@ function App() {
               <h3>Files Selected</h3>
             </div>
           </div>
-          <button className="text-2xl text-red-500 font-semibold">
+          <button onClick={()=> handleDeleteBtn()} className="text-2xl text-red-500 font-semibold">
             Delete Files
           </button>
         </div>
