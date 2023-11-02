@@ -1,5 +1,14 @@
 /* eslint-disable no-unused-vars */
+import { DndContext, closestCenter } from "@dnd-kit/core";
+import {
+  SortableContext,
+  arrayMove,
+  horizontalListSortingStrategy,
+  rectSortingStrategy,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
 import { useRef, useState } from "react";
+import SingleImage from "./components/SingleImage/SingleImage";
 
 const images = [
   {
@@ -63,7 +72,9 @@ function App() {
   // selected image
   const [selectedImg, setSelectedImg] = useState(images);
   const [imgArray, setImgArray] = useState([]);
+
   const handleSelectedImg = (id) => {
+    
     const updateSelectedImg = selectedImg.map((img) => {
       return img.id === id ? { ...img, select: !img.select } : img;
     });
@@ -74,6 +85,8 @@ function App() {
     );
     setImgArray(remainingImage);
   };
+
+ 
 
   // delete btn
   const handleDeleteBtn = () => {
@@ -97,9 +110,21 @@ function App() {
     }
   };
 
+  // drag and drop
+  const handleDragStart = (e, index) => {
+    e.dataTransfer.setData("index", index);
+  };
+  const handleDrop = (e, newIndex) => {
+    const startIndex = e.dataTransfer.getData("index");
+    const updatedBoxes = [...selectedImg];
+    const [draggedBox] = updatedBoxes.splice(startIndex, 1);
+    updatedBoxes.splice(newIndex, 0, draggedBox);
+    setSelectedImg(updatedBoxes);
+  };
+
   return (
     <div className="bg-green-200">
-      <div className="w-[85%] mx-auto bg-white">
+      <div className="w-[90%] mx-auto bg-white">
         <div className="flex justify-between px-8 py-8">
           <div className="flex items-center gap-2">
             <h3 className="text-3xl font-semibold ">Gallery</h3>
@@ -108,6 +133,7 @@ function App() {
               <div className="flex items-center gap-2">
                 <input
                   defaultChecked
+                  
                   className="rounded-full h-6 w-6"
                   type="checkbox"
                   name=""
@@ -132,34 +158,16 @@ function App() {
           )}
         </div>
         <hr />
-        <div className="grid grid-cols-5 p-8 gap-4">
+        <div className="grid grid-cols-5 p-8 gap-4 w-[85%] mx-auto">
           {selectedImg?.map((image, index) => (
-            <div
+            <SingleImage
               key={image.id}
-              className={`${
-                index === 0
-                  ? "row-span-2 col-span-2 border-2 rounded-lg"
-                  : "border-2 rounded-lg"
-              } relative cursor-pointer`}
-            >
-              <img src={image.url} alt="" />{" "}
-              <div
-                className={
-                  image.select
-                    ? "bg-yellow-200 absolute h-full w-full left-0 top-0 bottom-0 right-0  transition-all opacity-50"
-                    : "bg-slate-400 absolute h-full w-full top-0 left-0 right-0 bottom-0 opacity-0 transition-all hover:opacity-30"
-                }
-              >
-                <input
-                  checked={image.select}
-                  onChange={() => handleSelectedImg(image.id)}
-                  className="absolute top-6 left-6 rounded-full h-5 w-5"
-                  type="checkbox"
-                  name=""
-                  id=""
-                />
-              </div>
-            </div>
+              image={image}
+              index={index}
+              handleDragStart={handleDragStart}
+              handleDrop={handleDrop}
+              handleSelectedImg={handleSelectedImg}
+            />
           ))}
           <div
             onClick={() => handleImageUploadClick()}
