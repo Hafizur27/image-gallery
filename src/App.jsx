@@ -69,32 +69,37 @@ const images = [
 ];
 
 function App() {
-  // selected image
-  const [selectedImg, setSelectedImg] = useState(images);
-  const [imgArray, setImgArray] = useState([]);
+  const [allImages, setAllImages] = useState(images);
+  const [allSelectedImages, setAllSelectedImages] = useState([]);
 
+// select image handler
   const handleSelectedImg = (id) => {
     
-    const updateSelectedImg = selectedImg.map((img) => {
+    const updateSelectedImg = allImages.map((img) => {
       return img.id === id ? { ...img, select: !img.select } : img;
     });
 
-    setSelectedImg(updateSelectedImg);
+    setAllImages(updateSelectedImg);
     const remainingImage = updateSelectedImg.filter(
       (image) => image.select === true
     );
-    setImgArray(remainingImage);
+    setAllSelectedImages(remainingImage);
   };
 
- 
+  // reset all selected images handler
+  const handleResetAllImage = ()=>{
+    const updatedSelectedImg = allImages.map((img) => ({ ...img, select: false }));
+    setAllImages(updatedSelectedImg);
+    setAllSelectedImages([]);
+  }
 
   // delete btn
   const handleDeleteBtn = () => {
-    const remainingImage = selectedImg.filter(
+    const remainingImage = allImages.filter(
       (image) => image.select === false
     );
-    setSelectedImg(remainingImage);
-    setImgArray([]);
+    setAllImages(remainingImage);
+    setAllSelectedImages([]);
   };
 
   const fileInputRef = useRef();
@@ -116,10 +121,10 @@ function App() {
   };
   const handleDrop = (e, newIndex) => {
     const startIndex = e.dataTransfer.getData("index");
-    const updatedBoxes = [...selectedImg];
+    const updatedBoxes = [...allImages];
     const [draggedBox] = updatedBoxes.splice(startIndex, 1);
     updatedBoxes.splice(newIndex, 0, draggedBox);
-    setSelectedImg(updatedBoxes);
+    setAllImages(updatedBoxes);
   };
 
   return (
@@ -128,27 +133,27 @@ function App() {
         <div className="flex justify-between px-8 py-8">
           <div className="flex items-center gap-2">
             <h3 className="text-3xl font-semibold ">Gallery</h3>
-            {/* selected file */}
-            {imgArray.length > 0 && (
+            {/* all selected file */}
+            {allSelectedImages.length > 0 && (
               <div className="flex items-center gap-2">
                 <input
                   defaultChecked
-                  
+                  onChange={()=>handleResetAllImage()}
                   className="rounded-full h-6 w-6"
                   type="checkbox"
                   name=""
                   id=""
                 />
-                {imgArray.length === 1 ? (
-                  <h3>{imgArray.length} File Selected</h3>
+                {allSelectedImages.length === 1 ? (
+                  <h3>{allSelectedImages.length} File Selected</h3>
                 ) : (
-                  <h3>{imgArray.length} Files Selected</h3>
+                  <h3>{allSelectedImages.length} Files Selected</h3>
                 )}
               </div>
             )}
           </div>
           {/* delete file */}
-          {imgArray.length > 0 && (
+          {allSelectedImages.length > 0 && (
             <button
               onClick={() => handleDeleteBtn()}
               className="text-2xl text-red-500 font-semibold"
@@ -159,7 +164,7 @@ function App() {
         </div>
         <hr />
         <div className="grid grid-cols-5 p-8 gap-4 w-[85%] mx-auto">
-          {selectedImg?.map((image, index) => (
+          {allImages?.map((image, index) => (
             <SingleImage
               key={image.id}
               image={image}
