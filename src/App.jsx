@@ -1,10 +1,7 @@
-/* eslint-disable no-unused-vars */
-
 import { useRef, useState } from "react";
 import SingleImage from "./components/SingleImage/SingleImage";
 import { imageGallery } from "./components/ImageGallery/ImageGallery";
-import fileUpload from '../public/images/fileUpload.gif';
-
+import fileUpload from "../public/images/fileUpload.jpg";
 
 function App() {
   const images = imageGallery;
@@ -33,13 +30,13 @@ function App() {
     setAllSelectedImages([]);
   };
 
-  // delete btn handler
+  // delete button handler
   const handleDeleteBtn = () => {
     const remainingImage = allImages.filter((image) => image.select === false);
     setAllImages(remainingImage);
     setAllSelectedImages([]);
   };
-// add image part
+  // upload image part
   const fileInputRef = useRef();
 
   const handleImageUploadClick = () => {
@@ -48,18 +45,14 @@ function App() {
 
   const handleFileChange = (e) => {
     const files = e.target.files;
-    console.log(files[0])
-   
-      const file = files[0];
-      const id = allImages.length + 1;
-    
-      const img_path = URL.createObjectURL(file);
-      const newImage = { id, url: img_path, select: false };
-      setAllImages(() => [...allImages, newImage]);
+    const file = files[0];
+    const id = allImages.length + 1;
+    const img_path = URL.createObjectURL(file);
+    const newImage = { id, url: img_path, select: false };
+    setAllImages(() => [...allImages, newImage]);
 
     e.target.value = null;
   };
- 
 
   // drag and drop handler part
   const handleDragStart = (e, index) => {
@@ -127,6 +120,7 @@ function App() {
           )}
         </header>
         <hr className="h-px bg-gray-200 border-2 dark:bg-gray-700" />
+        {/* photo gallery part */}
         <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 p-6 gap-4 w-[85%] mx-auto">
           {allImages?.map((image, index) => (
             <SingleImage
@@ -138,17 +132,18 @@ function App() {
               handleSelectedImg={handleSelectedImg}
             />
           ))}
+          {/* photo upload part */}
           <div
             onClick={() => handleImageUploadClick()}
-            className="flex flex-col gap-4 border-2 border-neutral-600 border-dashed rounded-lg items-center justify-center "
+            className="border-2 border-neutral-600 border-dashed rounded-lg "
           >
             <img
+              className="rounded-lg"
               width="1200"
               height="1200"
               src={fileUpload}
               alt="gallery"
             />
-            {/* <p>Add Image</p> */}
             <input
               type="file"
               id="fileInput"
