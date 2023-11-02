@@ -3,6 +3,7 @@
 import { useRef, useState } from "react";
 import SingleImage from "./components/SingleImage/SingleImage";
 import { imageGallery } from "./components/ImageGallery/ImageGallery";
+import fileUpload from '../public/images/fileUpload.gif';
 
 
 function App() {
@@ -139,15 +140,15 @@ function App() {
           ))}
           <div
             onClick={() => handleImageUploadClick()}
-            className="flex flex-col gap-4 border-2 border-neutral-600 border-dashed rounded-lg items-center justify-center h-[200px] md:h-[181px] lg:h-[216px] "
+            className="flex flex-col gap-4 border-2 border-neutral-600 border-dashed rounded-lg items-center justify-center "
           >
             <img
-              width="48"
-              height="48"
-              src="https://img.icons8.com/sf-regular-filled/48/gallery.png"
+              width="1200"
+              height="1200"
+              src={fileUpload}
               alt="gallery"
             />
-            <p>Add Images</p>
+            {/* <p>Add Image</p> */}
             <input
               type="file"
               id="fileInput"
